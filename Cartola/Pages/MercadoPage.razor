@@ -1,0 +1,84 @@
+﻿@page "/mercado"
+
+@using Cartola.Data
+@using Cartola.Domain.Entities
+@using Cartola.Domain.Services.IServices;
+@using System.Linq;
+
+@inject WeatherForecastService ForecastService
+@inject ICartolaService _cartolaService
+
+<button class="btn btn-primary" @onclick="() => Recarregar(7)">Provável</button>
+<button class="btn btn-primary" @onclick="() => Recarregar(2)">Dúvida</button>
+<button class="btn btn-primary" @onclick="() => Recarregar(5)">Contudido</button>
+<button class="btn btn-primary" @onclick="() => Recarregar(3)">Suspenso</button>
+<hr />
+
+@if (atletas == null)
+{
+    if (controle)
+    {
+        <p><em>Carregando...</em></p>
+    }
+    else
+    {
+        <p><em>Nenhum dado carregado.</em></p>
+    }
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Apelido</th>
+                <th>Jogos</th>
+                <th>Última pontuação</th>
+                <th>Média</th>
+                <th>Clube</th>
+                <th>Posição</th>
+                <th>PrecoNum</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var atleta in atletas)
+            {
+                <tr>
+                    <td>
+                        <img src="@_cartolaService.FormatarFotoJogador(atleta?.Foto)" alt="@atleta.Apelido" title="@atleta.Apelido">
+                    </td>
+                    <td>@atleta.Apelido</td>
+                    <td>@atleta.JogosNum</td>
+                    <td>@atleta.PontosNum</td>
+                    <td>@atleta.MediaNum</td>
+                    <td>@atleta.Clube.Nome</td>
+                    <td>@atleta.Posicao.Nome</td>
+                    <td>C$ @atleta.PrecoNum.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Jogador> atletas;
+    private List<Jogador> atletasBase;
+
+    private bool controle = false;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //}
+
+    private void Recarregar(int status)
+    {
+        if (!controle)
+        {
+            atletas = atletasBase = _cartolaService.GetJogadoresMercado();
+
+            controle = true;
+        }
+
+        atletas = atletasBase.Where(x => x.StatusId == status).ToList();
+    }
+}

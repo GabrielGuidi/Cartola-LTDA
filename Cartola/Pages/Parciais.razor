@@ -1,0 +1,73 @@
+﻿@page "/parciais"
+
+@using Cartola.Data
+@using Cartola.Domain.Entities
+@using Cartola.Domain.Services.IServices;
+
+@inject WeatherForecastService ForecastService
+@inject ICartolaService _cartolaService
+
+<h6>Última atualização: @dataAtualizacao</h6>
+<hr />
+
+@if (parciais == null)
+{
+    if (controle)
+    {
+        <p><em>Carregando...</em></p>
+    }
+    else
+    {
+        <p><em>Nenhum dado carregado.</em></p>
+    }
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Apelido</th>
+                <th>Clube</th>
+                <th>Pontuação</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var parcial in parciais)
+            {
+                <tr>
+                    <td>
+                        <img src="@_cartolaService.FormatarFotoJogador(parcial?.Jogador.Foto)" alt="@parcial.Apelido" title="@parcial.Apelido">
+                    </td>
+                    <td>@parcial.Apelido</td>
+                    <td>@parcial.Jogador.Clube.Nome</td>
+                    <td>@parcial.Pontuacao</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<PontuacaoParcial> parciais;
+
+    private bool controle = false;
+    private string dataAtualizacao = "Atualizando!";
+
+    protected override void OnInitialized()
+    {
+        Recarregar();
+    }
+
+    private void Recarregar()
+    {
+        if (!controle)
+        {
+            parciais = _cartolaService.GetParciais();
+
+            controle = true;
+            dataAtualizacao = parciais.First().DataModificacao.ToString();
+            dataAtualizacao = parciais.OrderByDescending(x => x.DataModificacao).ToList().First().DataModificacao.ToString();
+        }
+    }
+}

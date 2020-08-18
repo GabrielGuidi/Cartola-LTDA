@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200802162806_configureRelationshipClubeEscudo.cs" />
+    <Compile Remove="Migrations\20200802162806_configureRelationshipClubeEscudo.Designer.cs" />
+    <Compile Remove="Migrations\20200802172053_configureKeyClube.cs" />
+    <Compile Remove="Migrations\20200802172053_configureKeyClube.Designer.cs" />
+    <Compile Remove="Migrations\20200803162208_addColumnEscudosId.cs" />
+    <Compile Remove="Migrations\20200803162208_addColumnEscudosId.Designer.cs" />
+    <Compile Remove="Migrations\20200803163259_updateColumnEscudosId.cs" />
+    <Compile Remove="Migrations\20200803163259_updateColumnEscudosId.Designer.cs" />
+    <Compile Remove="Migrations\20200809014928_createTablePartida.cs" />
+    <Compile Remove="Migrations\20200809014928_createTablePartida.Designer.cs" />
+    <Compile Remove="Migrations\20200809023549_createTablePartida.cs" />
+    <Compile Remove="Migrations\20200809023549_createTablePartida.Designer.cs" />
+    <Compile Remove="Migrations\20200809031337_updateTablePartida02.cs" />
+    <Compile Remove="Migrations\20200809031337_updateTablePartida02.Designer.cs" />
+    <Compile Remove="Migrations\20200810152425_UpadteIndexJogadorHistorico.cs" />
+    <Compile Remove="Migrations\20200810152425_UpadteIndexJogadorHistorico.Designer.cs" />
+    <Compile Remove="Migrations\20200811213808_TableColumnHistoricoScout.cs" />
+    <Compile Remove="Migrations\20200811213808_TableColumnHistoricoScout.Designer.cs" />
+    <Compile Remove="Migrations\20200811231429_UpdateTableColumnHistoricoScouts.cs" />
+    <Compile Remove="Migrations\20200811231429_UpdateTableColumnHistoricoScouts.Designer.cs" />
+    <Compile Remove="Migrations\20200811233009_UpdateTableColumnHistoricoScouts.cs" />
+    <Compile Remove="Migrations\20200811233009_UpdateTableColumnHistoricoScouts.Designer.cs" />
+    <Compile Remove="Migrations\20200811233516_UpdateTableColumnHistoricoScouts_11_08.cs" />
+    <Compile Remove="Migrations\20200811233516_UpdateTableColumnHistoricoScouts_11_08.Designer.cs" />
+    <Compile Remove="Migrations\20200811233734_AlterTableColumnHistoricoScouts_11_08.cs" />
+    <Compile Remove="Migrations\20200811233734_AlterTableColumnHistoricoScouts_11_08.Designer.cs" />
+    <Compile Remove="Migrations\20200812000305_UpdateTableScout_11_08.cs" />
+    <Compile Remove="Migrations\20200812000305_UpdateTableScout_11_08.Designer.cs" />
+    <Compile Remove="Migrations\20200812001815_UpdateTableScout_11_08.cs" />
+    <Compile Remove="Migrations\20200812001815_UpdateTableScout_11_08.Designer.cs" />
+    <Compile Remove="Migrations\20200812002501_UpdateTableScout_11_082.cs" />
+    <Compile Remove="Migrations\20200812002501_UpdateTableScout_11_082.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cartola.Domain\Cartola.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

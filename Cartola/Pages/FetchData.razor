@@ -1,0 +1,131 @@
+﻿@page "/cargas"
+
+@using Cartola.Domain.Services.IServices;
+@using Cartola.Domain.Entities;
+
+@inject ICargaCartolaService _cargaCartolaService
+
+<h1>Painel de cargas</h1>
+<hr />
+<button class="btn btn-primary" @onclick="CargaClubes">Carga clubes</button>
+<button class="btn btn-primary" @onclick="CargaPosicoes">Carga posições</button>
+<button class="btn btn-primary" @onclick="CargaEsquemas">Carga esquemas</button>
+<button class="btn btn-primary" @onclick="CargaStatus">Carga status</button>
+
+<hr />
+
+<button class="btn btn-primary" @onclick="CargaRodada">Carga rodada</button>
+<button class="btn btn-primary" @onclick="CargaPartidas">Carga partidas</button>
+<button class="btn btn-primary" @onclick="CargaJogadores">Carga jogadores</button>
+<button class="btn btn-primary" @onclick="CargaParciais">Carga parciais</button>
+
+<hr />
+
+<button class="btn btn-primary" @onclick="ConsolidarRodada">Consolidar rodada</button>
+
+<hr />
+@if (cargaRealizada == null)
+{
+    <p><em></em></p>
+}
+else
+{
+    if (!cargaRealizada ?? false)
+    {
+        <p><em>Carregando...</em></p>
+    }
+    else
+    {
+        <p><em>Carga @rotuloCarga realizada!</em></p>
+        <p><em>Updates: @response.QuantidadeUpdates realizados!</em></p>
+        <p><em>Inserts: @response.QuantidadeInserts realizados!</em></p>
+
+        if (!string.IsNullOrWhiteSpace(response.Mensagem))
+        {
+            <p><em style="white-space: break-spaces;">@response.Mensagem</em></p>
+        }
+
+        if (!string.IsNullOrWhiteSpace(response.Errors))
+        {
+            <p><em style="white-space: break-spaces;">Erro: @response.Errors</em></p>
+        }
+    }
+}
+
+@code {
+    private bool? cargaRealizada = null;
+    private string rotuloCarga = string.Empty;
+    private CartolaCargaResponse response = new CartolaCargaResponse();
+
+    private void CargaClubes()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "de clubes";
+        response = _cargaCartolaService.CargaClubes();
+        cargaRealizada = true;
+    }
+
+    private void CargaPosicoes()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "de posições";
+        response = _cargaCartolaService.CargaPosicoes();
+        cargaRealizada = true;
+    }
+
+    private void CargaEsquemas()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "de esquemas";
+        response = _cargaCartolaService.CargaEsquemas();
+        cargaRealizada = true;
+    }
+
+    private void CargaStatus()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "de status";
+        response = _cargaCartolaService.CargaStatus();
+        cargaRealizada = true;
+    }
+
+    private void CargaRodada()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "das rodadas";
+        response = _cargaCartolaService.CargaRodada();
+        cargaRealizada = true;
+    }
+
+    private void CargaPartidas()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "das partidas";
+        response = _cargaCartolaService.CargaPartidas();
+        cargaRealizada = true;
+    }
+
+    private void CargaJogadores()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "de jogadores";
+        response = _cargaCartolaService.CargaJogadores();
+        cargaRealizada = true;
+    }
+
+    private void CargaParciais()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "das pontuações parciais";
+        response = _cargaCartolaService.CargaParciais(3);
+        cargaRealizada = true;
+    }
+      
+    private void ConsolidarRodada()
+    {
+        cargaRealizada = false;
+        rotuloCarga = "de consolidação";
+        response = _cargaCartolaService.ConsolidarRodada(3);
+        cargaRealizada = true;
+    }
+}
