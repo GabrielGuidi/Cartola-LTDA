@@ -117,7 +117,7 @@ else
     {
         cargaRealizada = false;
         rotuloCarga = "das pontuações parciais";
-        response = _cargaCartolaService.CargaParciais(3);
+        response = _cargaCartolaService.CargaParciais();
         cargaRealizada = true;
     }
       
@@ -125,7 +125,7 @@ else
     {
         cargaRealizada = false;
         rotuloCarga = "de consolidação";
-        response = _cargaCartolaService.ConsolidarRodada(3);
+        response = _cargaCartolaService.ConsolidarRodada();
         cargaRealizada = true;
     }
 }

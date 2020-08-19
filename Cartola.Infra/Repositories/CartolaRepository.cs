@@ -87,7 +87,7 @@ namespace Cartola.Infra.Repositories
 
         public List<PontuacaoParcial> GetParciais()
         {
-            var rodada = 3;
+            var rodada = 4;
 
             return _cartolaDBContext.PontuacaoParcial
                 .Include(x => x.Jogador)
