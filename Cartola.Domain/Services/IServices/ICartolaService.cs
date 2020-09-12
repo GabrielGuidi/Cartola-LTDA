@@ -12,7 +12,11 @@ namespace Cartola.Domain.Services.IServices
         List<Clube> GetClubes();
         List<Posicao> GetPosicoes();
         List<Esquema> GetEsquemas();
-        
+
+        StatusMercado GetStatusMercado();
+
+
         string FormatarFotoJogador(string link);
+        int GetUltimaRodadaSemConsolidar();
     }
 }

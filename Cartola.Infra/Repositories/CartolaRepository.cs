@@ -2,7 +2,6 @@
 using Cartola.Domain.Services.IRepositories;
 using Cartola.Infra.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace Cartola.Infra.Repositories
     {
         private readonly IHttpClientCartolaApi _httpClientCartolaApi;
         private readonly CartolaDBContext _cartolaDBContext;
-        
+
         public CartolaRepository(IHttpClientCartolaApi clientFactory, CartolaDBContext cartolaDBContext)
         {
             _httpClientCartolaApi = clientFactory;
@@ -85,16 +84,23 @@ namespace Cartola.Infra.Repositories
                 .ToList();
         }
 
-        public List<PontuacaoParcial> GetParciais()
+        public List<PontuacaoParcial> GetParciais(int? rodada = null)
         {
-            var rodada = 4;
+            rodada = GetRodadaAtual();
 
             return _cartolaDBContext.PontuacaoParcial
                 .Include(x => x.Jogador)
                 .Include(x => x.Jogador.Clube)
                 .Include(x => x.Scout)
+                .Include(x => x.Jogador.Posicao)
                 .Where(x => x.RodadaId == rodada)
                 .ToList();
+        }
+
+        private int GetRodadaAtual()
+        {
+            return _cartolaDBContext.PontuacaoParcial
+                .Max(x => x.RodadaId);
         }
 
         public bool Escalar(Escalacao escalacao)
@@ -105,6 +111,13 @@ namespace Cartola.Infra.Repositories
             var result = _httpClientCartolaApi.Request<List<dynamic>>(_auth_time_salvar, HttpMethod.Post, true, escalacaoJson);
 
             return result != null;
+        }
+
+        public List<JogadorHistorico> GetJogadoresHistoricoSemConsolidar()
+        {
+            return _cartolaDBContext.JogadorHistorico
+                .Where(x => !x.Consolidado)
+                .ToList();
         }
     }
 }

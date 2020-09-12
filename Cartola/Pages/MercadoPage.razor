@@ -1,11 +1,7 @@
 ﻿@page "/mercado"
 
-@using Cartola.Data
-@using Cartola.Domain.Entities
-@using Cartola.Domain.Services.IServices;
 @using System.Linq;
 
-@inject WeatherForecastService ForecastService
 @inject ICartolaService _cartolaService
 
 <button class="btn btn-primary" @onclick="() => Recarregar(7)">Provável</button>

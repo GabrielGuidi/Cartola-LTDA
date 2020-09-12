@@ -2,6 +2,7 @@
 using Cartola.Infra.Models;
 using Cartola.Infra.Repositories.Interfaces;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -45,9 +46,13 @@ namespace Cartola.Infra.Repositories.Base
             using var client = GetClient();
             var request = GetRequest(endpoint, method, withToken, content);
             using var response = client.SendAsync(request);
+
             var responseJson = response.Result.Content.ReadAsStringAsync().Result;
-            response.Dispose();
-            return JsonSerializer.Deserialize<T>(responseJson);
+
+            if (response.Result.StatusCode == HttpStatusCode.OK)
+                return JsonSerializer.Deserialize<T>(responseJson);
+
+            return null;
         }
 
         private void GetHeaders(HttpRequestMessage request)

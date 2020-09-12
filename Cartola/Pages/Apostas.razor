@@ -1,0 +1,77 @@
+﻿@page "/apostas"
+
+@inject IApostasService _apostasService
+
+<h1>Painel de aportes</h1>
+
+<label>
+    Lucro:
+    <input type="number" name="lucro" @bind="lucro" />
+</label>
+
+<label>
+    Porcentagem:
+    <input type="number" name="porcentagem" @bind="porcentagem" /></label>
+
+<label>
+    Fator:
+    <input type="number" name="fator" @bind="fator" />
+</label>
+
+<button class="btn btn-primary" @onclick="RecalcularAposta">Calcular</button>
+
+
+<hr />
+@if (aportes == null)
+{
+    <p><em>Carregando...</em></p>
+}
+else
+{
+    if (!aportes.Any())
+    {
+        <p><em>Nada por aqui!</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Rodada</th>
+                    <th>Aporte</th>
+                    <th>Banca</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 1; i <= aportes.Count; i++)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@aportes[i - 1]</td>
+                        <td>@aportes.Take(i).Sum()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+    private List<decimal> aportes;
+    private decimal lucro { get; set; } = 0;
+    private decimal porcentagem { get; set; } = 0;
+    private decimal fator { get; set; } = 0;
+
+    protected void RecalcularAposta()
+    {
+        if (fator > 0m)
+        {
+            aportes = _apostasService.GerarAnaliseAposta(lucro, null, fator);
+        }
+        else
+        {
+            var porcentagemRatio = porcentagem / 100;
+            aportes = _apostasService.GerarAnaliseAposta(lucro, porcentagemRatio, null);
+        }
+    }
+}

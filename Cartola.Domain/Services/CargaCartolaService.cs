@@ -4,16 +4,19 @@ using Cartola.Domain.Services.IRepositories;
 using Cartola.Domain.Services.IServices;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cartola.Domain.Services
 {
     public class CargaCartolaService : ICargaCartolaService
     {
         private readonly ICargaCartolaRepository _cargaCartolaRepository;
+        private readonly ICartolaService _cartolaService;
 
-        public CargaCartolaService(ICargaCartolaRepository cargaCartolaRepository)
+        public CargaCartolaService(ICargaCartolaRepository cargaCartolaRepository, ICartolaService cartolaService)
         {
             _cargaCartolaRepository = cargaCartolaRepository;
+            _cartolaService = cartolaService;
         }
 
         public CartolaCargaResponse CargaClubes()
@@ -105,6 +108,9 @@ namespace Cartola.Domain.Services
         {
             List<PontuacaoParcial> listaPontuacaoParcial = _cargaCartolaRepository.GetPontuacaoParcialFromApi(rodada);
 
+            if (!listaPontuacaoParcial.Any())
+                return new CartolaCargaResponse() { Mensagem = "Menhum dado encontrado na origem!" };
+
             foreach (var parcial in listaPontuacaoParcial)
             {
                 if (parcial.Scout != null)
@@ -123,7 +129,7 @@ namespace Cartola.Domain.Services
         {
             var response = new CartolaCargaResponse();
             var isRodadaAtual = true;
-            var rodadaConsolidar = rodada ?? 2;
+            var rodadaConsolidar = rodada ?? _cartolaService.GetUltimaRodadaSemConsolidar();
 
             var responsePartidas = CargaPartidas(rodadaConsolidar);
             response.Mensagem += $"Tabela Partidas: inserts => {responsePartidas.QuantidadeInserts}, updates => {responsePartidas.QuantidadeUpdates}\n{(string.IsNullOrWhiteSpace(responsePartidas.Mensagem) ? "" : responsePartidas.Mensagem + "\n")}";
@@ -133,14 +139,14 @@ namespace Cartola.Domain.Services
                 var responseJogadores = CargaJogadores();
                 response.Mensagem += $"Tabela Jogadores: inserts => {responseJogadores.QuantidadeInserts}, updates => {responseJogadores.QuantidadeUpdates}\n{(string.IsNullOrWhiteSpace(responseJogadores.Mensagem) ? "" : responseJogadores.Mensagem + "\n")}";
             }
-            
+
             var responseParciais = CargaParciais(rodadaConsolidar, true);
             response.Mensagem += $"Tabela PontuacaoParcial: inserts => {responseParciais.QuantidadeInserts}, updates => {responseParciais.QuantidadeUpdates}\n{(string.IsNullOrWhiteSpace(responseParciais.Mensagem) ? "" : responseParciais.Mensagem + "\n")}";
 
 
             var responseGerais = _cargaCartolaRepository.ConsolidarRegistrosRestantes(rodadaConsolidar);
-            response.Mensagem += $"Tabelas gerais: inserts => {responseGerais.QuantidadeInserts}, updates => {responseGerais.QuantidadeUpdates}\n{(string.IsNullOrWhiteSpace(responseGerais.Mensagem) ? "" : responseGerais.Mensagem+ "\n")}";
-            
+            response.Mensagem += $"Tabelas gerais: inserts => {responseGerais.QuantidadeInserts}, updates => {responseGerais.QuantidadeUpdates}\n{(string.IsNullOrWhiteSpace(responseGerais.Mensagem) ? "" : responseGerais.Mensagem + "\n")}";
+
             return response;
         }
 

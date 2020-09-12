@@ -1,10 +1,5 @@
 ﻿@page "/parciais"
 
-@using Cartola.Data
-@using Cartola.Domain.Entities
-@using Cartola.Domain.Services.IServices;
-
-@inject WeatherForecastService ForecastService
 @inject ICartolaService _cartolaService
 
 <h6>Última atualização: @dataAtualizacao</h6>
@@ -30,19 +25,21 @@ else
                 <th>Apelido</th>
                 <th>Clube</th>
                 <th>Pontuação</th>
+                <th>Posição</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var parcial in parciais)
             {
-                <tr>
-                    <td>
-                        <img src="@_cartolaService.FormatarFotoJogador(parcial?.Jogador.Foto)" alt="@parcial.Apelido" title="@parcial.Apelido">
-                    </td>
-                    <td>@parcial.Apelido</td>
-                    <td>@parcial.Jogador.Clube.Nome</td>
-                    <td>@parcial.Pontuacao</td>
-                </tr>
+            <tr>
+                <td>
+                    <img src="@_cartolaService.FormatarFotoJogador(parcial?.Jogador.Foto)" alt="@parcial.Apelido" title="@parcial.Apelido">
+                </td>
+                <td>@parcial.Apelido</td>
+                <td>@parcial.Jogador.Clube.Nome</td>
+                <td>@parcial.Pontuacao</td>
+                <td>@parcial.Jogador.Posicao?.Nome</td>
+            </tr>
             }
         </tbody>
     </table>

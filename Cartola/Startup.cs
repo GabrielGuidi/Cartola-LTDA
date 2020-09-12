@@ -1,22 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Cartola.Data;
-using Cartola.Infra.Repositories;
 using Cartola.Domain.Services;
 using Cartola.Domain.Services.IRepositories;
 using Cartola.Domain.Services.IServices;
+using Cartola.Infra;
+using Cartola.Infra.Repositories;
 using Cartola.Infra.Repositories.Base;
 using Cartola.Infra.Repositories.Interfaces;
-using Cartola.Infra;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Cartola
 {
@@ -40,6 +34,7 @@ namespace Cartola
             services.AddScoped<ICartolaService, CartolaService>();
             services.AddScoped<ICargaCartolaService, CargaCartolaService>();
             services.AddScoped<ICargaCartolaRepository, CargaCartolaRepository>();
+            services.AddScoped<IApostasService, ApostasService>();
             services.AddScoped<CartolaDBContext>();
             
             services.AddSingleton<IHttpClientCartolaApi, HttpClientCartolaApi>();

@@ -23,6 +23,7 @@ namespace Cartola.Infra.Repositories
         private readonly string _atletas_mercado = "https://api.cartolafc.globo.com/atletas/mercado";
         private readonly string _rodadas = "https://api.cartolafc.globo.com/rodadas";
         private readonly string _partidas = "https://api.cartolafc.globo.com/partidas/";
+        private readonly string _mercado_status = "https://api.cartolafc.globo.com/mercado/status";
 
         #region [links]
         /*
@@ -55,6 +56,10 @@ namespace Cartola.Infra.Repositories
          * atleta_pontuacao: "//api.cartolafc.globo.com/auth/mercado/atleta/{idAtleta}/pontuacao"
          * 
          * São Paulo e Goiás não jogaram a primeira rodada.
+         * 
+         * 
+         * https://the-odds-api.com/
+         * https://rapidapi.com/api-sports/api/api-football/endpoints
         */
         #endregion
 
@@ -133,6 +138,9 @@ namespace Cartola.Infra.Repositories
         {
             var data = _httpClientCartolaApi.Request<PontuacaoParcialJson>(_atletas_pontuados + rodada ?? "");
 
+            if (data == null)
+                return new List<PontuacaoParcial>();
+
             foreach (var parcial in data.Atletas)
             {
                 parcial.Value.JogadorId = int.Parse(parcial.Key);
@@ -144,7 +152,7 @@ namespace Cartola.Infra.Repositories
                 }
             }
 
-            var response = data.Atletas.Select(x => x.Value).ToList();
+            var response = data?.Atletas.Select(x => x.Value).ToList();
 
             return response;
         }
@@ -367,8 +375,8 @@ namespace Cartola.Infra.Repositories
             var apiResponse = new CartolaCargaResponse();
             try
             {
-                using var scope = new TransactionScope(TransactionScopeOption.Required,
-                                                       new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted });
+                using var scope = new TransactionScope(
+                    TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted });
 
                 var db = _cartolaDBContext.Jogador.Include(b => b.ScoutAtual).ToList();
 
@@ -399,9 +407,9 @@ namespace Cartola.Infra.Repositories
             var responseJogadoresHistoricos = InsertJogadoresHistorico(listaJogadores);
 
             if (string.IsNullOrWhiteSpace(responseJogadoresHistoricos.Errors))
-            {
                 apiResponse.Mensagem = $"Tabela JogadoresHistorico: inserts => {responseJogadoresHistoricos.QuantidadeInserts}, updates => {responseJogadoresHistoricos.QuantidadeUpdates}";
-            }
+            else
+                apiResponse.Errors += responseJogadoresHistoricos.Errors;
 
             return apiResponse;
         }
@@ -501,7 +509,10 @@ namespace Cartola.Infra.Repositories
 
                 CartolaCargaResponse updadeResponse = UpdateJogadoresHistorico(listaPontuacaoParcial, rodadaAtual, consolidar);
 
-                apiResponse.Mensagem = $"Tabela JogadoresHistorico: updates => {updadeResponse.QuantidadeUpdates}";
+                if (string.IsNullOrWhiteSpace(updadeResponse.Errors))
+                    apiResponse.Mensagem = $"Tabela JogadoresHistorico: updates => {updadeResponse.QuantidadeUpdates}";
+                else
+                    apiResponse.Errors += updadeResponse.Errors;
 
                 return apiResponse;
             }
@@ -535,7 +546,7 @@ namespace Cartola.Infra.Repositories
                         _cartolaDBContext.Update(jogadorHistorico);
                         apiResponse.QuantidadeUpdates++;
                     }
-                    else if (!jogadorHistorico.Consolidado && consolidar)
+                    else if (jogadorHistorico != null && !jogadorHistorico.Consolidado && consolidar)
                     {
                         Consolidar(jogadorHistorico);
                         _cartolaDBContext.Update(jogadorHistorico);
@@ -582,15 +593,15 @@ namespace Cartola.Infra.Repositories
             try
             {
                 var registroJogadorHistorico = _cartolaDBContext.JogadorHistorico
-                    .Where(x => x.RodadaId == rodadaConsolidar && x.Consolidado == false)
+                    .Where(x => /*TODO x.RodadaId == rodadaConsolidar && */x.Consolidado == false)
                     .ToList();
 
                 var registroScout = _cartolaDBContext.Scout
-                    .Where(x => x.RodadaId == rodadaConsolidar && x.Consolidado == false && Origens.Contains((int)x.Origem))
+                    .Where(x => /*x.RodadaId == rodadaConsolidar && */x.Consolidado == false && Origens.Contains((int)x.Origem))
                     .ToList();
 
                 var registroPontuacaoParcial = _cartolaDBContext.PontuacaoParcial
-                    .Where(x => x.RodadaId == rodadaConsolidar && x.Consolidado == false)
+                    .Where(x => /*x.RodadaId == rodadaConsolidar && */x.Consolidado == false)
                     .ToList();
 
                 foreach (var jogador in registroJogadorHistorico)
@@ -624,6 +635,13 @@ namespace Cartola.Infra.Repositories
                 apiResponse.Errors = erro.Message;
                 return apiResponse;
             }
+        }
+
+        public StatusMercado GetStatusMercadoFromApi()
+        {
+            var response = _httpClientCartolaApi.Request<StatusMercado>(_mercado_status);
+
+            return response;
         }
         #endregion
     }

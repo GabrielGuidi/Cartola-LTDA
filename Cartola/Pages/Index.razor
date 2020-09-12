@@ -1,9 +1,52 @@
 ﻿@page "/"
 
-@using Cartola.Data
-@inject WeatherForecastService ForecastService
-<h1>Hello, world!</h1>
+@using Cartola.Domain.Enuns
 
-Welcome to your new app.
+@inject ICartolaService _cartolaService
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<style>
+    .centralizar{
+        text-align: center;
+        display: block;
+    }
+
+    .tempoRestante{
+        font-size: 18px;
+    }
+</style>
+
+
+<MatH4 class="centralizar">Dashboard - Rodada @statusMercado.RodadaAtual</MatH4>
+
+<MatH5 class="centralizar">Mercado @situacaoAtual</MatH5>
+
+<MatH6 class="centralizar">
+    Data de fechamento: <span style="font-weight: 800" >@statusMercado.DataFechamento.ToLongDateString()</span> às <span style="font-weight: 800" >@statusMercado.DataFechamento.ToLongTimeString()</span>, horário de Brasília
+</MatH6>
+
+<div class="tempoRestante">
+    <span class="centralizar">
+        Tempo restante:
+    </span>
+    <span class="centralizar">
+        @tempoRestante.Days dias
+    </span>
+    <span class="centralizar">
+        @tempoRestante.Hours.ToString().PadLeft(2, '0') : @tempoRestante.Minutes.ToString().PadLeft(2, '0') : @tempoRestante.Seconds.ToString().PadLeft(2, '0')
+    </span>
+</div>
+
+
+@code {
+    StatusMercado statusMercado;
+    string situacaoAtual = "Indeterminado";
+    TimeSpan tempoRestante = TimeSpan.MaxValue;
+
+    protected override void OnInitialized()
+    {
+        statusMercado = _cartolaService.GetStatusMercado();
+        situacaoAtual = ((SituacaoMercadoEnum)statusMercado.Status).ToString();
+
+        tempoRestante = statusMercado.DataFechamento - DateTime.Now;
+    }
+}

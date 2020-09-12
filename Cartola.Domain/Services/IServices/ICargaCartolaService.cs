@@ -12,7 +12,6 @@ namespace Cartola.Domain.Services.IServices
         CartolaCargaResponse CargaPartidas(int? rodada = null);
         CartolaCargaResponse CargaJogadores();
         CartolaCargaResponse CargaParciais(int? rodada = null, bool consolidar = false);
-
         CartolaCargaResponse ConsolidarRodada(int? rodada = null);
     }
 }

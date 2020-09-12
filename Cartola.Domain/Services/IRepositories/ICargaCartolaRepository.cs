@@ -23,5 +23,6 @@ namespace Cartola.Domain.Services.IRepositories
         CartolaCargaResponse InsertJogadores(List<Jogador> listaJogadores);
         CartolaCargaResponse InsertPontuacaoParcial(List<PontuacaoParcial> listaPontuacaoParcial, bool consolidar = false);
         CartolaCargaResponse ConsolidarRegistrosRestantes(int rodadaConsolidar);
+        StatusMercado GetStatusMercadoFromApi();
     }
 }
