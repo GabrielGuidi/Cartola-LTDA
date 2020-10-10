@@ -32,21 +32,48 @@
         @tempoRestante.Days dias
     </span>
     <span class="centralizar">
-        @tempoRestante.Hours.ToString().PadLeft(2, '0') : @tempoRestante.Minutes.ToString().PadLeft(2, '0') : @tempoRestante.Seconds.ToString().PadLeft(2, '0')
+        @tempoRestante.Hours.ToString().PadLeft(2, '0')h : @tempoRestante.Minutes.ToString().PadLeft(2, '0')m : @tempoRestante.Seconds.ToString().PadLeft(2, '0')s
     </span>
 </div>
 
+<p>@displayText </p>
 
 @code {
     StatusMercado statusMercado;
     string situacaoAtual = "Indeterminado";
     TimeSpan tempoRestante = TimeSpan.MaxValue;
 
-    protected override void OnInitialized()
+    string displayText = "";
+
+    protected override Task OnInitializedAsync()
     {
         statusMercado = _cartolaService.GetStatusMercado();
         situacaoAtual = ((SituacaoMercadoEnum)statusMercado.Status).ToString();
 
         tempoRestante = statusMercado.DataFechamento - DateTime.Now;
+
+
+
+        Timer();
+        return base.OnInitializedAsync();
+    }
+
+    async Task Timer()
+    {
+        while (tempoRestante > new TimeSpan())
+        {
+            await Task.Delay(1000);
+            tempoRestante = tempoRestante.Subtract(new TimeSpan(0, 0, 1));
+            StateHasChanged();
+        }
+
+        await AfterTime();
+        StateHasChanged();
+    }
+
+    Task AfterTime()
+    {
+        displayText = "Acabou";
+        return Task.CompletedTask;
     }
 }
