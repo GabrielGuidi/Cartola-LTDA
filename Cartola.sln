@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cartola.Infra", "Cartola.In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cartola.IoC", "Cartola.IoC\Cartola.IoC.csproj", "{012C732C-3E26-4B35-969B-0B9B2DBD7CA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cartola.Api", "Cartola.Api\Cartola.Api.csproj", "{95819534-FB64-4E69-AC6A-C2405A01E6AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cartola.Test", "Cartola.Test\Cartola.Test.csproj", "{37E2B599-A95B-4A2B-AD98-9CBF65A07B66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{012C732C-3E26-4B35-969B-0B9B2DBD7CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{012C732C-3E26-4B35-969B-0B9B2DBD7CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{012C732C-3E26-4B35-969B-0B9B2DBD7CA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95819534-FB64-4E69-AC6A-C2405A01E6AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95819534-FB64-4E69-AC6A-C2405A01E6AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95819534-FB64-4E69-AC6A-C2405A01E6AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95819534-FB64-4E69-AC6A-C2405A01E6AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37E2B599-A95B-4A2B-AD98-9CBF65A07B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37E2B599-A95B-4A2B-AD98-9CBF65A07B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37E2B599-A95B-4A2B-AD98-9CBF65A07B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37E2B599-A95B-4A2B-AD98-9CBF65A07B66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

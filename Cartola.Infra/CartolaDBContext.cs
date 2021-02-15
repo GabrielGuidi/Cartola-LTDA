@@ -6,7 +6,7 @@ namespace Cartola.Infra
 {
     public class CartolaDBContext : DbContext, IDisposable
     {
-        private const string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=CartolaDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private const string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=CartolaBackup;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         #region [Constructors]
         public CartolaDBContext() { }

@@ -29,7 +29,6 @@ namespace Cartola
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddScoped<WeatherForecastService>();
             services.AddScoped<ICartolaRepository, CartolaRepository>();
             services.AddScoped<ICartolaService, CartolaService>();
             services.AddScoped<ICargaCartolaService, CargaCartolaService>();

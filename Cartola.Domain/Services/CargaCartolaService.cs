@@ -125,10 +125,10 @@ namespace Cartola.Domain.Services
             return response;
         }
 
-        public CartolaCargaResponse ConsolidarRodada(int? rodada = null)
+        public CartolaCargaResponse ConsolidarRodada(int? rodada = 22)
         {
             var response = new CartolaCargaResponse();
-            var isRodadaAtual = true;
+            var isRodadaAtual = rodada == null;
 
             if (isRodadaAtual)
             {

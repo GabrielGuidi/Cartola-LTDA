@@ -5,17 +5,23 @@
 <h1>Painel de aportes</h1>
 
 <label>
-    Lucro:
-    <input type="number" name="lucro" @bind="lucro" />
+    Profit:
+    <input type="number" name="profit" @bind="profit" />
 </label>
 
 <label>
-    Porcentagem:
-    <input type="number" name="porcentagem" @bind="porcentagem" /></label>
+    <input type="checkbox" name="overall" @bind="overall" />
+    Overall
+</label>
 
 <label>
-    Fator:
-    <input type="number" name="fator" @bind="fator" />
+    Initial bet:
+    <input type="number" name="initialBet" @bind="initialBet" />
+</label>
+
+<label>
+    Rate:
+    <input type="number" name="rate" @bind="rate" />
 </label>
 
 <button class="btn btn-primary" @onclick="RecalcularAposta">Calcular</button>
@@ -40,15 +46,18 @@ else
                     <th>Rodada</th>
                     <th>Aporte</th>
                     <th>Banca</th>
+                    <th>%</th>
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 1; i <= aportes.Count; i++)
+
+                @foreach (var aporte in aportes)
                 {
                     <tr>
-                        <td>@i</td>
-                        <td>@aportes[i - 1]</td>
-                        <td>@aportes.Take(i).Sum()</td>
+                        <td>@aporte.Rodada</td>
+                        <td>@aporte.Aporte</td>
+                        <td>@aporte.SomatorioAporte</td>
+                        <td>@aporte.Chance</td>
                     </tr>
                 }
             </tbody>
@@ -57,21 +66,17 @@ else
 }
 
 @code {
-    private List<decimal> aportes;
-    private decimal lucro { get; set; } = 0;
-    private decimal porcentagem { get; set; } = 0;
-    private decimal fator { get; set; } = 0;
+    private List<Bet> aportes;
+    private decimal profit { get; set; } = 0;
+    private decimal initialBet { get; set; } = 0;
+    private decimal rate { get; set; } = 0;
+    private bool overall { get; set; }
 
     protected void RecalcularAposta()
     {
-        if (fator > 0m)
+        if (rate > 0m)
         {
-            aportes = _apostasService.GerarAnaliseAposta(lucro, null, fator);
-        }
-        else
-        {
-            var porcentagemRatio = porcentagem / 100;
-            aportes = _apostasService.GerarAnaliseAposta(lucro, porcentagemRatio, null);
+            aportes = _apostasService.GenerateBetsBook(profit, initialBet, rate, overall);
         }
     }
 }

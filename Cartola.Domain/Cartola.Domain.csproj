@@ -5,10 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Value objects\" />
+    <Compile Remove="Value objects\**" />
+    <EmbeddedResource Remove="Value objects\**" />
+    <None Remove="Value objects\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.78" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 

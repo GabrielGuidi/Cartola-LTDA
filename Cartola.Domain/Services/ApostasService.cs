@@ -1,4 +1,5 @@
-﻿using Cartola.Domain.Services.IServices;
+﻿using Cartola.Domain.Entities;
+using Cartola.Domain.Services.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,64 +8,70 @@ namespace Cartola.Domain.Services
 {
     public class ApostasService : IApostasService
     {
-        private const decimal lucroCasa = 0.075m;
-        private readonly decimal multiplicadorLucro;
+        private const decimal houseGain = 0.075m;
+        private readonly decimal profitFactor;
 
         public ApostasService()
         {
-            multiplicadorLucro = 1 - lucroCasa;
+            profitFactor = 1 - houseGain;
         }
 
-        public List<decimal> GerarAnaliseAposta(decimal lucroPorRodada, decimal? chanceDeSucesso = null, decimal? fatorRetorno = null)
+        public List<Bet> GenerateBetsBook(decimal profit, decimal initialBet, decimal rate, bool overall = false)
         {
-            var listaAportes = new List<decimal>();
-            var controleRodada = 1;
-
-            if (fatorRetorno == null)
-                fatorRetorno = CalcularFatorRetorno(chanceDeSucesso);
-
-            if (chanceDeSucesso == null)
-                chanceDeSucesso = CalcularChanceDeSucesso(fatorRetorno);
-
-            var chanceDePerderABanca = 1d;
-
-            while (chanceDePerderABanca * 100 > 1)
+            var wallet = new Wallet()
             {
-                listaAportes.Add(CalcularAporte(lucroPorRodada, listaAportes, controleRodada, fatorRetorno));
-                chanceDePerderABanca = Math.Pow((1 - (double)chanceDeSucesso), controleRodada++ + 1);
+                BetSettings = new BetSettings(profit, initialBet, rate, overall, CalculateWinRate(rate))
+            };
+
+            wallet.Bets.Add(CalculateInitialBet(wallet));
+            GenerateListBets(wallet);
+
+            return wallet.Bets;
+        }
+
+        private Bet CalculateInitialBet(Wallet wallet)
+        {
+            var initialBet = wallet.BetSettings.InitialBet > 0 ?
+                wallet.BetSettings.InitialBet :
+                DoTheMath(wallet.BetSettings.Profit, wallet.BetSettings.Rate, 0);
+
+            return new Bet(1, initialBet) { Aporte = initialBet, Chance = CalculateBetOdds(wallet.BetSettings.Odds, 1) };
+        }
+
+        private void GenerateListBets(Wallet wallet)
+        {
+            var loseAllOdds = double.MaxValue;
+
+            while (loseAllOdds * 100 > 0.1)
+            {
+                wallet.Bets.Add(CalculateBets(new Bet(wallet.Bets.Last().Rodada + 1, wallet.Bets.Sum(x => x.Aporte)), wallet.BetSettings));
+
+                loseAllOdds = wallet.Bets.Last().Chance;
             }
-
-            return listaAportes;
         }
 
-        private decimal CalcularAporte(decimal lucroPorRodada, List<decimal> listaAportes, int controleRodada, decimal? fatorRetorno)
+        private Bet CalculateBets(Bet bet, BetSettings betSettings)
         {
-            var somaAporteAnteriores = listaAportes.Sum();
-            var aporte = (lucroPorRodada * controleRodada + somaAporteAnteriores) / ((decimal)fatorRetorno - 1);
-
-            return Math.Round(aporte, 2);
+            bet.Chance = CalculateBetOdds(betSettings.Odds, bet.Rodada);
+            bet.Aporte = DoTheMath((betSettings.Overall ? 1 : bet.Rodada) * betSettings.Profit, betSettings.Rate, bet.SomatorioAporte);
+            bet.SomatorioAporte += bet.Aporte;
+            
+            return bet;
         }
 
-        private decimal CalcularChanceDeSucesso(decimal? fatorRetorno)
+        private double CalculateBetOdds(decimal odds, int rodada)
         {
-            if (fatorRetorno == null)
-                throw new ArgumentException("Valor fatorRetorno não pode ser nulo!");
-
-            var chanceDeSucesso = 1 / (fatorRetorno / multiplicadorLucro);
-
-            return (decimal)chanceDeSucesso;
+            return Math.Pow((1 - (double)odds), rodada);
         }
 
-        private decimal CalcularFatorRetorno(decimal? chanceDeSucesso)
+        private decimal DoTheMath(decimal targetProfit, decimal rate, decimal betsSum)
         {
-            if (chanceDeSucesso == null)
-                throw new ArgumentException("Valor chanceDeSucesso não pode ser nulo!");
+            return Math.Round((targetProfit + betsSum) / ((decimal)rate - 1), 2);
+        }
 
-            var fatorRetornoBruto = 1m / chanceDeSucesso;
-
-            var fatorRetorno = fatorRetornoBruto * multiplicadorLucro;
-
-            return (decimal)fatorRetorno;
+        private decimal CalculateWinRate(decimal rate)
+        {
+            return 1 / (rate / profitFactor);
         }
     }
 }
