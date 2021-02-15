@@ -1,5 +1,7 @@
 # Cartola FC Project
 
+## *** Projeto on hold. Será refeito utilizando .Net 5/Go lang, MongoDB, RabbitMQ e Docker assim que eu estiver dominando essas tecnologias ***
+
 Criado com o objetivo principal de consolidar o aprendizado em Blazor Server, boas práticas de desenvolvimento back-end e aplicação dos conceitos de DDD, Solid e Design patterns.
 
 Tecnologias: C#, .Net Core, Entity framework core, SQL Server.
